@@ -22,11 +22,12 @@ workflows:
           npm install
       - name: Install CocoaPods dependencies
         script: |
-          cd ios && pod install
+          cd ios && pod install || echo "No CocoaPods dependencies to install"
       - name: Set up code signing
         script: |
-          echo "Setting up code signing"
-          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Build iOS app
         script: |
           xcode-project build-ipa \
