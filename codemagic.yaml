@@ -6,6 +6,9 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.anthonyxiao.aceassistant
+        code_signing_identity: "Apple Distribution"
+        provisioning_profiles:
+          - "AceEA App Store Profile"
       vars:
         APP_ID: 6744206750
         BUNDLE_ID: "com.anthonyxiao.aceassistant"
@@ -25,9 +28,24 @@ workflows:
           cd ios && pod install || echo "No CocoaPods dependencies to install"
       - name: Set up code signing
         script: |
+          # Debug information
+          echo "Bundle ID: $BUNDLE_ID"
+          echo "Distribution type: app_store"
+          
+          # Fetch signing files
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          
+          # List available certificates
+          security find-identity -v -p codesigning
+          
+          # Add certificates to keychain
           keychain add-certificates
+          
+          # Use provisioning profiles
           xcode-project use-profiles
+          
+          # Verify provisioning profile
+          security cms -D -i "/Users/builder/Library/MobileDevice/Provisioning Profiles/"*.mobileprovision
       - name: Build iOS app
         script: |
           xcode-project build-ipa \
