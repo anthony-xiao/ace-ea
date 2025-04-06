@@ -6,10 +6,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.anthonyxiao.aceassistant
-        code_signing_identity: "Apple Distribution"
-        provisioning_profiles:
-          - name: "AceEA_AppStore"
-            bundle_identifier: com.anthonyxiao.aceassistant
       vars:
         APP_ID: 6744206750
         BUNDLE_ID: "com.anthonyxiao.aceassistant"
